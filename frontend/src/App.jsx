@@ -1,3 +1,4 @@
+import AITutor from "./pages/AITutor";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
@@ -13,6 +14,13 @@ function App() {
     <BrowserRouter>
       <Routes>
 
+        <Route
+  path="/ai-tutor"
+  element={<AITutor />}
+/>
+
+
+        <Route path="/ai-tutor" element={<AITutor />} />
         <Route
           path="/"
           element={<Login />}

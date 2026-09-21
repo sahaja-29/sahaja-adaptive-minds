@@ -98,9 +98,12 @@ function SubjectPage() {
           Ask doubts, generate explanations and get personalized recommendations.
         </p>
 
-        <button className="bg-white text-indigo-700 px-6 py-3 rounded-xl font-semibold hover:scale-105 transition duration-300">
-          Open AI Tutor
-        </button>
+        <button
+  onClick={() => navigate("/ai-tutor")}
+  className="bg-white text-indigo-700 px-6 py-3 rounded-xl font-semibold hover:scale-105 transition duration-300"
+>
+  Open AI Tutor
+</button>
 
       </div>
 
