@@ -12,6 +12,8 @@ const predictRoutes = require("./routes/predictRoutes");
 const csvRoutes = require("./routes/csvRoutes");
 const recommendationRoutes = require("./routes/recommendationRoutes");
 const aiRoutes = require("./routes/aiRoutes");
+const progressRoutes = require("./routes/progressRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const db = require("./config/db");
 
@@ -22,6 +24,8 @@ app.use(express.json());
 
 app.use("/subjects", subjectRoutes);
 app.use("/topics", topicRoutes);
+app.use("/api/progress", progressRoutes);
+app.use("/api/auth", authRoutes);
 
 app.use("/", quizRoutes);
 app.use("/", predictRoutes);

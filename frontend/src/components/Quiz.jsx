@@ -117,6 +117,63 @@ function Quiz({
   }
 
   // =========================================================
+  // SAVE QUIZ PROGRESS
+  // =========================================================
+
+  async function saveProgressAttempt(score, accuracy) {
+    const studentId = localStorage.getItem("studentId");
+
+    if (!studentId) {
+      console.error(
+        "Progress not saved: studentId is missing from localStorage."
+      );
+      return false;
+    }
+
+    const payload = {
+      student_id: Number(studentId),
+      semester: Number(localStorage.getItem("semester")) || 1,
+      subject_name: subjectName,
+      topic_name: topicName,
+      score: accuracy,
+      total_questions: questions.length,
+      correct_answers: score,
+      time_spent_seconds: timeSpent,
+    };
+
+    try {
+      console.log("Starting progress save:", payload);
+
+      const response = await fetch(
+        "http://localhost:5000/api/progress/attempts",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+            data.error ||
+            "Failed to save quiz progress"
+        );
+      }
+
+      console.log("Progress saved successfully:", data);
+      return true;
+    } catch (error) {
+      console.error("Progress tracking error:", error);
+      return false;
+    }
+  }
+
+  // =========================================================
   // FORMAT TIME
   // =========================================================
 
@@ -213,6 +270,9 @@ function Quiz({
     const accuracy = Math.round(
       (score / questions.length) * 100
     );
+
+    // Save the attempt independently of ML prediction.
+    await saveProgressAttempt(score, accuracy);
 
     try {
       // =====================================================

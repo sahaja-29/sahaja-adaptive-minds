@@ -34,19 +34,6 @@ function Dashboard() {
   // TOPIC COMPLETION
   // =========================================================
 
-  const topicCompleted =
-    localStorage.getItem(
-      `topicCompleted_${currentTopic}`
-    ) === "true";
-
-  const completedTopics = topicCompleted
-    ? [currentTopic]
-    : [];
-
-  // =========================================================
-  // UPCOMING TOPICS
-  // =========================================================
-
   const allTopics = [
     "Arrays",
     "Linked List",
@@ -56,17 +43,18 @@ function Dashboard() {
     "Graphs",
   ];
 
-  const upcomingTopics = allTopics.filter(
-    (topic) => !completedTopics.includes(topic)
+  // Keep every topic that has been marked completed in localStorage.
+  const completedTopics = allTopics.filter(
+    (topic) =>
+      localStorage.getItem(`topicCompleted_${topic}`) === "true"
   );
 
-  // =========================================================
-  // OVERALL PROGRESS
-  // =========================================================
+  // Check whether the currently selected topic is completed.
+  const topicCompleted =
+    localStorage.getItem(
+      `topicCompleted_${currentTopic}`
+    ) === "true";
 
-  const overallProgress = topicCompleted
-    ? 100
-    : topicProgress;
 
   return (
     <div className="min-h-screen bg-[#F7F8FF] text-[#172554]">
@@ -155,12 +143,15 @@ function Dashboard() {
             </button>
 
 
-            <button
-              className="w-full text-left px-4 py-3.5 rounded-2xl text-[#64748B] hover:bg-[#F5F3FF] hover:text-[#5B4BDB] transition flex items-center gap-3"
-            >
-              <span>📊</span>
-              <span>Analytics</span>
-            </button>
+            
+<button
+  onClick={() => navigate("/progress")}
+  className="w-full text-left px-4 py-3.5 rounded-2xl text-[#64748B] hover:bg-[#F5F3FF] hover:text-[#5B4BDB] transition flex items-center gap-3"
+>
+  <span>📊</span>
+  <span>Analytics</span>
+</button>
+
 
           </nav>
 
@@ -236,48 +227,7 @@ function Dashboard() {
             STATS
         =================================================== */}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-9">
-
-          {/* PROGRESS */}
-
-          <div className="bg-white border border-[#E8E7F2] rounded-2xl p-6 shadow-[0_10px_30px_rgba(79,70,229,0.05)]">
-
-            <div className="flex items-center justify-between">
-
-              <div>
-                <p className="text-[#64748B] text-sm">
-                  Overall Progress
-                </p>
-
-                <p className="text-3xl font-bold text-[#5B4BDB] mt-2">
-                  {overallProgress}%
-                </p>
-              </div>
-
-              <div className="w-12 h-12 rounded-2xl bg-[#EEEBFF] flex items-center justify-center text-xl">
-                📈
-              </div>
-
-            </div>
-
-            <div className="w-full h-2 bg-[#EEF0F6] rounded-full mt-5 overflow-hidden">
-
-              <div
-                className="h-2 bg-gradient-to-r from-[#5B4BDB] to-[#8B7CF6] rounded-full transition-all duration-500"
-                style={{
-                  width: `${overallProgress}%`,
-                }}
-              />
-
-            </div>
-
-            <p className="text-[#94A3B8] text-xs mt-3">
-              {topicCompleted
-                ? "Topic completed!"
-                : "Keep learning!"}
-            </p>
-
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-9">
 
 
           {/* COMPLETED */}
@@ -596,87 +546,6 @@ function Dashboard() {
             </div>
 
           )}
-
-        </section>
-
-
-        {/* ===================================================
-            UPCOMING TOPICS
-        =================================================== */}
-
-        <section className="mb-10">
-
-          <h2 className="text-2xl font-bold">
-            Upcoming Topics
-          </h2>
-
-          <p className="text-[#64748B] mt-1 mb-5">
-            Complete your current learning path to unlock
-            the next topic.
-          </p>
-
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-            {upcomingTopics.map(
-              (topic, index) => {
-
-                const isNextTopic =
-                  topicCompleted &&
-                  index === 0;
-
-                return (
-
-                  <div
-                    key={topic}
-                    className={`bg-white border rounded-2xl p-6 transition ${
-                      isNextTopic
-                        ? "border-[#C4B5FD] shadow-sm"
-                        : "border-[#E8E7F2] opacity-70"
-                    }`}
-                  >
-
-                    <div className="flex items-center gap-4">
-
-                      <div
-                        className={`w-11 h-11 rounded-full flex items-center justify-center ${
-                          isNextTopic
-                            ? "bg-[#EEEBFF]"
-                            : "bg-[#F1F5F9]"
-                        }`}
-                      >
-                        {isNextTopic
-                          ? "🔓"
-                          : "🔒"}
-                      </div>
-
-
-                      <div>
-
-                        <h3 className="font-bold text-lg">
-                          {topic}
-                        </h3>
-
-                        <p className="text-[#64748B] text-sm">
-
-                          {isNextTopic
-                            ? "Next topic available"
-                            : `Complete ${currentTopic} first`}
-
-                        </p>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                );
-
-              }
-            )}
-
-          </div>
 
         </section>
 

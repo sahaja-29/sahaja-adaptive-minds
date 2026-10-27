@@ -11,6 +11,7 @@ import LearningSelection from "./pages/LearningSelection";
 import LearningPage from "./pages/LearningPage";
 import FinalTestPage from "./pages/FinalTestPage";
 import AITutor from "./pages/AITutor";
+import ProgressPage from "./pages/ProgressPage";
 
 function App() {
   return (
@@ -38,6 +39,8 @@ function App() {
         <Route path="/final-test" element={<FinalTestPage />} />
 
         <Route path="/ai-tutor" element={<AITutor />} />
+
+        <Route path="/progress" element={<ProgressPage />} />
 
       </Routes>
     </BrowserRouter>

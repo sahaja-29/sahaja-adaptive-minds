@@ -7,15 +7,40 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (email && password) {
-      navigate("/semester");
-    } else {
-      alert("Please enter email and password");
+  if (!email || !password) {
+    alert("Please enter email and password");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Login failed");
     }
-  };
+
+    localStorage.setItem("studentId", String(data.user.id));
+    localStorage.setItem("studentName", data.user.name);
+    localStorage.setItem("studentEmail", data.user.email);
+
+    navigate("/semester");
+  } catch (error) {
+    alert(error.message || "Unable to log in. Please try again.");
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-[#F7F8FF] flex items-center justify-center px-6 relative overflow-hidden">

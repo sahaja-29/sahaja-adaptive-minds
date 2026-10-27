@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import Quiz from "../components/Quiz";
 import "../components/Quiz.css";
@@ -10,10 +11,7 @@ function QuizPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // =========================================
-  // LOAD SAVED LEARNING SELECTION
-  // =========================================
-
+  // Load the saved learning selection
   useEffect(() => {
     const subjectId = localStorage.getItem("currentSubjectId");
     const topicId = localStorage.getItem("currentTopicId");
@@ -22,29 +20,22 @@ function QuizPage() {
     const subjectName = localStorage.getItem("currentSubject");
     const topicName = localStorage.getItem("currentTopic");
 
-    console.log("Saved Learning Selection:");
-    console.log("Subject:", subjectName);
-    console.log("Subject ID:", subjectId);
-    console.log("Topic:", topicName);
-    console.log("Topic ID:", topicId);
-    console.log("Difficulty:", difficulty);
+    console.log("Saved Learning Selection:", {
+      subjectName,
+      subjectId,
+      topicName,
+      topicId,
+      difficulty,
+    });
 
-    // =========================================
-    // VALIDATE SAVED DATA
-    // =========================================
-
+    // Validate the saved selection
     if (!subjectId || !topicId || !difficulty) {
       setError(
         "Learning selection is incomplete. Please return to Start New Learning and select a subject, topic and difficulty."
       );
-
       setLoading(false);
       return;
     }
-
-    // =========================================
-    // SET QUIZ DATA
-    // =========================================
 
     setSelectedSubject(subjectId);
     setSelectedTopic(topicId);
@@ -53,79 +44,40 @@ function QuizPage() {
     setLoading(false);
   }, []);
 
-  // =========================================
-  // START QUIZ
-  // =========================================
-
-  if (
-    !loading &&
-    !error &&
-    selectedSubject &&
-    selectedTopic &&
-    selectedDifficulty
-  ) {
-    return (
-      <Quiz
-        selectedSubject={selectedSubject}
-        selectedTopic={selectedTopic}
-        selectedDifficulty={selectedDifficulty}
-      />
-    );
-  }
-
-  // =========================================
-  // LOADING
-  // =========================================
-
+  // Loading screen
   if (loading) {
     return (
       <div className="quiz-page">
         <div className="quiz-loading">
-
-          <div className="quiz-loading-icon">
-            🧠
-          </div>
-
-          <h2>
-            Preparing Your Assessment...
-          </h2>
-
-          <p>
-            Loading your selected topic and difficulty.
-          </p>
-
+          <div className="quiz-loading-icon">🧠</div>
+          <h2>Preparing Your Assessment...</h2>
+          <p>Loading your selected topic and difficulty.</p>
         </div>
       </div>
     );
   }
 
-  // =========================================
-  // ERROR
-  // =========================================
-
+  // Error screen
   if (error) {
     return (
       <div className="quiz-page">
         <div className="quiz-error">
-
-          <div className="quiz-error-icon">
-            ⚠️
-          </div>
-
-          <h2>
-            Unable to Start Assessment
-          </h2>
-
-          <p>
-            {error}
-          </p>
-
+          <div className="quiz-error-icon">⚠️</div>
+          <h2>Unable to Start Assessment</h2>
+          <p>{error}</p>
         </div>
       </div>
     );
   }
 
-  return null;
+  // Render the quiz with the saved selection
+  return (
+    <Quiz
+      selectedSubject={selectedSubject}
+      selectedTopic={selectedTopic}
+      selectedDifficulty={selectedDifficulty}
+    />
+  );
 }
 
 export default QuizPage;
