@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -5,42 +6,111 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // Forgot Password states
+  const [forgotPasswordMode, setForgotPasswordMode] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetMessage, setResetMessage] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+
   const navigate = useNavigate();
 
-  
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  // Existing login functionality
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!email || !password) {
-    alert("Please enter email and password");
-    return;
-  }
-
-  try {
-    const response = await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Login failed");
+    if (!email || !password) {
+      alert("Please enter email and password");
+      return;
     }
 
-    localStorage.setItem("studentId", String(data.user.id));
-    localStorage.setItem("studentName", data.user.name);
-    localStorage.setItem("studentEmail", data.user.email);
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
-    navigate("/semester");
-  } catch (error) {
-    alert(error.message || "Unable to log in. Please try again.");
-  }
-};
+      const data = await response.json();
 
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      localStorage.setItem("studentId", String(data.user.id));
+      localStorage.setItem("studentName", data.user.name);
+      localStorage.setItem("studentEmail", data.user.email);
+
+      navigate("/semester");
+    } catch (error) {
+      alert(error.message || "Unable to log in. Please try again.");
+    }
+  };
+
+  // Forgot Password functionality
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setResetMessage("");
+
+    if (!resetEmail.trim()) {
+      setResetMessage("Please enter your email address.");
+      return;
+    }
+
+    try {
+      setResetLoading(true);
+
+      const response = await fetch(
+        "http://localhost:5000/api/auth/forgot-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: resetEmail.trim(),
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Unable to request a reset email."
+        );
+      }
+
+      setResetMessage(
+        data.message ||
+          "If an account exists for this email, a reset link will be sent."
+      );
+    } catch (error) {
+      setResetMessage(
+        error.message ||
+          "Unable to contact the server. Please try again."
+      );
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  // Open Forgot Password form
+  const openForgotPassword = () => {
+    setResetEmail(email);
+    setResetMessage("");
+    setForgotPasswordMode(true);
+  };
+
+  // Return to normal login form
+  const backToLogin = () => {
+    setForgotPasswordMode(false);
+    setResetMessage("");
+  };
 
   return (
     <div className="min-h-screen bg-[#F7F8FF] flex items-center justify-center px-6 relative overflow-hidden">
@@ -90,23 +160,17 @@ const handleSubmit = async (e) => {
 
             <div className="bg-white/10 border border-white/10 rounded-2xl p-4 backdrop-blur">
               <div className="text-2xl mb-2">🎯</div>
-              <p className="text-xs font-medium">
-                Personalized
-              </p>
+              <p className="text-xs font-medium">Personalized</p>
             </div>
 
             <div className="bg-white/10 border border-white/10 rounded-2xl p-4 backdrop-blur">
               <div className="text-2xl mb-2">🤖</div>
-              <p className="text-xs font-medium">
-                AI Powered
-              </p>
+              <p className="text-xs font-medium">AI Powered</p>
             </div>
 
             <div className="bg-white/10 border border-white/10 rounded-2xl p-4 backdrop-blur">
               <div className="text-2xl mb-2">📈</div>
-              <p className="text-xs font-medium">
-                Track Progress
-              </p>
+              <p className="text-xs font-medium">Track Progress</p>
             </div>
 
           </div>
@@ -117,93 +181,163 @@ const handleSubmit = async (e) => {
 
           <div className="w-full max-w-md mx-auto">
 
-            <div className="mb-8">
-              <p className="text-sm font-semibold text-[#6D5CE7] mb-2">
-                WELCOME BACK 👋
-              </p>
+            {forgotPasswordMode ? (
+              <>
+                {/* Forgot Password form */}
+                <div className="mb-8">
+                  <p className="text-sm font-semibold text-[#6D5CE7] mb-2">
+                    ACCOUNT RECOVERY
+                  </p>
 
-              <h2 className="text-3xl font-bold text-[#172554]">
-                Sign in to your account
-              </h2>
+                  <h2 className="text-3xl font-bold text-[#172554]">
+                    Forgot Password?
+                  </h2>
 
-              <p className="text-[#64748B] mt-2">
-                Continue your personalized learning journey.
-              </p>
-            </div>
+                  <p className="text-[#64748B] mt-2">
+                    Enter your registered email address and we’ll send
+                    you a password reset link if an account exists.
+                  </p>
+                </div>
 
-            <form onSubmit={handleSubmit}>
+                <form onSubmit={handleForgotPassword}>
+                  <div className="mb-5">
+                    <label className="block text-sm font-semibold text-[#334155] mb-2">
+                      Email Address
+                    </label>
 
-              {/* Email */}
-              <div className="mb-5">
-                <label className="block text-sm font-semibold text-[#334155] mb-2">
-                  Email Address
-                </label>
+                    <input
+                      type="email"
+                      placeholder="you@example.com"
+                      value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
+                      autoComplete="email"
+                      required
+                      className="w-full px-4 py-3.5 rounded-2xl bg-[#F8F9FF] border border-[#E2E4F0] text-[#172554] placeholder-[#94A3B8] outline-none transition focus:border-[#6D5CE7] focus:ring-4 focus:ring-[#6D5CE7]/10"
+                    />
+                  </div>
 
-                <input
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3.5 rounded-2xl bg-[#F8F9FF] border border-[#E2E4F0] text-[#172554] placeholder-[#94A3B8] outline-none transition focus:border-[#6D5CE7] focus:ring-4 focus:ring-[#6D5CE7]/10"
-                />
-              </div>
+                  <button
+                    type="submit"
+                    disabled={resetLoading}
+                    className="w-full bg-gradient-to-r from-[#5B4BDB] to-[#7C6FF2] text-white font-semibold py-3.5 rounded-2xl shadow-lg hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {resetLoading
+                      ? "Sending..."
+                      : "Send Reset Link"}
+                  </button>
+                </form>
 
-              {/* Password */}
-              <div className="mb-3">
-                <label className="block text-sm font-semibold text-[#334155] mb-2">
-                  Password
-                </label>
+                {resetMessage && (
+                  <p
+                    role="status"
+                    aria-live="polite"
+                    className="mt-5 text-sm text-[#475569] break-words"
+                  >
+                    {resetMessage}
+                  </p>
+                )}
 
-                <input
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3.5 rounded-2xl bg-[#F8F9FF] border border-[#E2E4F0] text-[#172554] placeholder-[#94A3B8] outline-none transition focus:border-[#6D5CE7] focus:ring-4 focus:ring-[#6D5CE7]/10"
-                />
-              </div>
-
-              <div className="flex justify-end mb-7">
                 <button
                   type="button"
-                  className="text-sm font-medium text-[#6D5CE7] hover:text-[#4F46E5] transition"
+                  onClick={backToLogin}
+                  className="mt-6 text-sm font-semibold text-[#5B4BDB] hover:text-[#4338CA] transition"
                 >
-                  Forgot password?
+                  ← Back to Login
                 </button>
-              </div>
+              </>
+            ) : (
+              <>
+                {/* Normal login form */}
+                <div className="mb-8">
+                  <p className="text-sm font-semibold text-[#6D5CE7] mb-2">
+                    WELCOME BACK 👋
+                  </p>
 
-              {/* Login button */}
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-[#5B4BDB] to-[#7C6FF2] text-white font-semibold py-3.5 rounded-2xl shadow-lg shadow-[#5B4BDB]/20 hover:shadow-xl hover:shadow-[#5B4BDB]/25 hover:-translate-y-0.5 transition-all duration-300"
-              >
-                Login →
-              </button>
+                  <h2 className="text-3xl font-bold text-[#172554]">
+                    Sign in to your account
+                  </h2>
 
-            </form>
+                  <p className="text-[#64748B] mt-2">
+                    Continue your personalized learning journey.
+                  </p>
+                </div>
 
-            {/* Register */}
-            <p className="text-center text-[#64748B] mt-8">
-              Don't have an account?
+                <form onSubmit={handleSubmit}>
+                  {/* Email */}
+                  <div className="mb-5">
+                    <label className="block text-sm font-semibold text-[#334155] mb-2">
+                      Email Address
+                    </label>
 
-              <Link
-                to="/register"
-                className="font-semibold text-[#5B4BDB] ml-2 hover:text-[#4338CA] transition"
-              >
-                Create account
-              </Link>
-            </p>
+                    <input
+                      type="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      autoComplete="email"
+                      required
+                      className="w-full px-4 py-3.5 rounded-2xl bg-[#F8F9FF] border border-[#E2E4F0] text-[#172554] placeholder-[#94A3B8] outline-none transition focus:border-[#6D5CE7] focus:ring-4 focus:ring-[#6D5CE7]/10"
+                    />
+                  </div>
 
-            {/* Bottom text */}
-            <div className="flex items-center justify-center gap-2 mt-10 text-xs text-[#94A3B8]">
-              <span>🔒</span>
-              <span>Your learning journey is secure</span>
-            </div>
+                  {/* Password */}
+                  <div className="mb-3">
+                    <label className="block text-sm font-semibold text-[#334155] mb-2">
+                      Password
+                    </label>
+
+                    <input
+                      type="password"
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      autoComplete="current-password"
+                      required
+                      className="w-full px-4 py-3.5 rounded-2xl bg-[#F8F9FF] border border-[#E2E4F0] text-[#172554] placeholder-[#94A3B8] outline-none transition focus:border-[#6D5CE7] focus:ring-4 focus:ring-[#6D5CE7]/10"
+                    />
+                  </div>
+
+                  <div className="flex justify-end mb-7">
+                    <button
+                      type="button"
+                      onClick={openForgotPassword}
+                      className="text-sm font-medium text-[#6D5CE7] hover:text-[#4F46E5] transition"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+
+                  {/* Login button */}
+                  <button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-[#5B4BDB] to-[#7C6FF2] text-white font-semibold py-3.5 rounded-2xl shadow-lg shadow-[#5B4BDB]/20 hover:shadow-xl hover:shadow-[#5B4BDB]/25 hover:-translate-y-0.5 transition-all duration-300"
+                  >
+                    Login →
+                  </button>
+                </form>
+
+                {/* Register */}
+                <p className="text-center text-[#64748B] mt-8">
+                  Don't have an account?
+
+                  <Link
+                    to="/register"
+                    className="font-semibold text-[#5B4BDB] ml-2 hover:text-[#4338CA] transition"
+                  >
+                    Create account
+                  </Link>
+                </p>
+
+                {/* Bottom text */}
+                <div className="flex items-center justify-center gap-2 mt-10 text-xs text-[#94A3B8]">
+                  <span>🔒</span>
+                  <span>Your learning journey is secure</span>
+                </div>
+              </>
+            )}
 
           </div>
-
         </div>
-
       </div>
     </div>
   );

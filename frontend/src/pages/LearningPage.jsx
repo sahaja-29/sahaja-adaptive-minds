@@ -103,54 +103,128 @@ function YouTubePlayer({
     completedRef.current = completed;
   }, [onComplete, onWatchTime, completed]);
 
+
   useEffect(() => {
     let cancelled = false;
     let player = null;
     let trackingInterval = null;
+    let lastPosition = null;
     let lastTick = null;
-    let watchedSeconds = 0;
     let completionSent = false;
+    let duration = 0;
+    const watchedIntervals = [];
 
     setPlayerError("");
     if (!videoId || locked) return undefined;
+
+    const addWatchedInterval = (start, end) => {
+      const a = Math.max(0, Math.min(start, duration));
+      const b = Math.max(0, Math.min(end, duration));
+
+      if (b <= a) return;
+
+      watchedIntervals.push([a, b]);
+      watchedIntervals.sort((x, y) => x[0] - y[0]);
+
+      const merged = [];
+      for (const interval of watchedIntervals) {
+        const previous = merged[merged.length - 1];
+
+        if (previous && interval[0] <= previous[1] + 0.25) {
+          previous[1] = Math.max(previous[1], interval[1]);
+        } else {
+          merged.push([...interval]);
+        }
+      }
+
+      watchedIntervals.length = 0;
+      watchedIntervals.push(...merged);
+    };
+
+    const getUniqueWatchedSeconds = () =>
+      watchedIntervals.reduce(
+        (total, [start, end]) => total + end - start,
+        0
+      );
 
     const stopTracking = () => {
       if (trackingInterval) {
         clearInterval(trackingInterval);
         trackingInterval = null;
       }
+      lastPosition = null;
       lastTick = null;
     };
 
     const startTracking = () => {
       if (trackingInterval) return;
-      lastTick = Date.now();
+
+      try {
+        duration = Number(player?.getDuration()) || 0;
+        lastPosition = Number(player?.getCurrentTime()) || 0;
+        lastTick = Date.now();
+      } catch {
+        lastPosition = null;
+        lastTick = null;
+      }
 
       trackingInterval = setInterval(() => {
         if (!player || cancelled) return;
+
         try {
-          if (player.getPlayerState() !== window.YT.PlayerState.PLAYING) {
+          if (
+            player.getPlayerState() !==
+            window.YT.PlayerState.PLAYING
+          ) {
+            lastPosition = null;
             lastTick = null;
             return;
           }
+
           const now = Date.now();
-          if (lastTick !== null) {
-            const elapsed = Math.min((now - lastTick) / 1000, 6);
-            if (elapsed > 0) {
-              watchedSeconds += elapsed;
-              onWatchTimeRef.current?.(
-                videoId,
-                watchedSeconds,
-                player.getDuration()
-              );
+          const position = Number(player.getCurrentTime());
+          duration = Number(player.getDuration()) || duration;
+
+          if (!Number.isFinite(position) || duration <= 0) {
+            lastPosition = position;
+            lastTick = now;
+            return;
+          }
+
+          if (lastPosition !== null && lastTick !== null) {
+            const elapsed = (now - lastTick) / 1000;
+            const positionDelta = position - lastPosition;
+
+            // Count only normal playback movement. A large jump
+            // indicates seeking and is deliberately not counted.
+            if (
+              elapsed > 0 &&
+              elapsed <= 6 &&
+              positionDelta >= 0 &&
+              positionDelta <= elapsed + 1.5
+            ) {
+              addWatchedInterval(lastPosition, position);
             }
           }
+
+          const uniqueWatched = Math.floor(
+            getUniqueWatchedSeconds()
+          );
+
+          onWatchTimeRef.current?.(
+            videoId,
+            uniqueWatched,
+            duration
+          );
+
+          lastPosition = position;
           lastTick = now;
         } catch (error) {
           console.error("Watch tracking error:", error);
+          lastPosition = null;
           lastTick = null;
         }
-      }, 5000);
+      }, 1000);
     };
 
     async function initializePlayer() {
@@ -174,16 +248,13 @@ function YouTubePlayer({
                 console.log("YouTube player ready:", videoId);
               }
             },
+
             onStateChange: (event) => {
               if (cancelled) return;
-              console.log(
-                "YOUTUBE PLAYER STATE:",
-                event.data,
-                "VIDEO:",
-                videoId
-              );
 
-              if (event.data === window.YT.PlayerState.PLAYING) {
+              if (
+                event.data === window.YT.PlayerState.PLAYING
+              ) {
                 startTracking();
               } else {
                 stopTracking();
@@ -193,18 +264,38 @@ function YouTubePlayer({
                 event.data === window.YT.PlayerState.ENDED &&
                 !completionSent
               ) {
-                completionSent = true;
-                completedRef.current = true;
-                console.log("VIDEO ENDED:", videoId);
-                onCompleteRef.current?.(videoId, {
-                  title,
-                  url: `https://www.youtube.com/watch?v=${videoId}`,
-                });
+                duration = Number(player?.getDuration()) || duration;
+
+                const uniqueWatched = getUniqueWatchedSeconds();
+                const percentage =
+                  duration > 0
+                    ? (uniqueWatched / duration) * 100
+                    : 0;
+
+                if (percentage >= 90) {
+                  completionSent = true;
+                  completedRef.current = true;
+
+                  onCompleteRef.current?.(videoId, {
+                    title,
+                    url: `https://www.youtube.com/watch?v=${videoId}`,
+                  });
+                } else {
+                  console.log(
+                    "Video ended without enough verified watch time:",
+                    {
+                      videoId,
+                      percentage: Number(percentage.toFixed(2)),
+                    }
+                  );
+                }
               }
             },
+
             onError: (event) => {
               if (cancelled) return;
               stopTracking();
+
               const messages = {
                 2: "This video has an invalid video ID.",
                 5: "This video cannot be played in the embedded player.",
@@ -213,14 +304,21 @@ function YouTubePlayer({
                 150: "The video owner does not allow embedded playback.",
                 153: "YouTube could not verify the player request. Try reloading the page.",
               };
+
               setPlayerError(
                 messages[event.data] ||
                   "This video could not be played. Try another resource."
               );
-              console.error("YouTube player error:", event.data, videoId);
+
+              console.error(
+                "YouTube player error:",
+                event.data,
+                videoId
+              );
             },
           },
         });
+
         playerRef.current = player;
       } catch (error) {
         if (!cancelled) {
@@ -237,6 +335,7 @@ function YouTubePlayer({
     return () => {
       cancelled = true;
       stopTracking();
+
       if (player) {
         try {
           player.destroy();
@@ -244,9 +343,13 @@ function YouTubePlayer({
           console.warn("Player cleanup:", error);
         }
       }
-      if (playerRef.current === player) playerRef.current = null;
+
+      if (playerRef.current === player) {
+        playerRef.current = null;
+      }
     };
   }, [videoId, locked, title]);
+
 
   if (!videoId) {
     return (
@@ -486,7 +589,7 @@ function LearningPage() {
   }, [completedVideos, completedKey]);
 
   // Overall progress is based on completed recommendations.
-  
+
 const totalVideos = videos.length;
 
 const completedCount = videos.filter((video) =>

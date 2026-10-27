@@ -104,24 +104,14 @@ function escapeRegex(text) {
 // ============================================================
 
 function containsKeyword(text, keyword) {
-
-    const normalizedText =
-        normalizeText(text);
-
-    const normalizedKeyword =
-        normalizeText(keyword);
+    const normalizedText = normalizeText(text);
+    const normalizedKeyword = normalizeText(keyword);
 
     if (!normalizedText || !normalizedKeyword) {
         return false;
     }
 
-    const pattern =
-        new RegExp(
-            `(^|\\s)${escapeRegex(normalizedKeyword)}($|\\s)`,
-            "i"
-        );
-
-    return pattern.test(normalizedText);
+    return normalizedText.includes(normalizedKeyword);
 }
 
 

@@ -77,7 +77,7 @@ function SemesterSelection() {
             </h3>
 
             <p className="text-[#64748B] leading-relaxed">
-              DSA, DBMS, Digital Electronics & more
+              Data Structures, DBMS, OOP with Java, Operating Systems
             </p>
 
             <div className="mt-7 flex items-center gap-2 text-sm text-[#94A3B8]">
@@ -114,7 +114,7 @@ function SemesterSelection() {
             </h3>
 
             <p className="text-[#64748B] leading-relaxed">
-              OS, CN, Algorithms, Software Engineering
+              Algorithms, Biology for Computer Engineers, Microcontrollers, Digital Design and Computer Organization
             </p>
 
             <div className="mt-7 flex items-center gap-2 text-sm text-[#94A3B8]">

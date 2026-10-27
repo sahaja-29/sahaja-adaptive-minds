@@ -18,22 +18,47 @@ function LearningSelection() {
   // LOAD SUBJECTS
   // =========================================================
 
-  useEffect(() => {
-    fetch("http://localhost:5000/subjects")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to load subjects");
-        }
 
-        return response.json();
-      })
-      .then((data) => {
-        setSubjects(data);
-      })
-      .catch((error) => {
-        console.error("Error loading subjects:", error);
-      });
-  }, []);
+useEffect(() => {
+  fetch("http://localhost:5000/subjects")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to load subjects");
+      }
+
+      return response.json();
+    })
+    .then((data) => {
+      const semester3Subjects = [
+        "Data Structures",
+        "Database Management Systems",
+        "OOP with Java",
+        "Operating Systems"
+      ];
+
+      const semester4Subjects = [
+        "Analysis & Design of Algorithms",
+        "Biology for Computer Engineers",
+        "Microcontrollers",
+        "Digital Design and Computer Organization"
+      ];
+
+      const allowedSubjects =
+        semester === "Semester 4"
+          ? semester4Subjects
+          : semester3Subjects;
+
+      setSubjects(
+        data.filter((subject) =>
+          allowedSubjects.includes(subject.name)
+        )
+      );
+    })
+    .catch((error) => {
+      console.error("Error loading subjects:", error);
+    });
+}, [semester]);
+
 
   // =========================================================
   // LOAD TOPICS

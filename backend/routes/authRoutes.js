@@ -3,6 +3,21 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const db = require("../config/db");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT) || 587,
+  secure: process.env.SMTP_SECURE === "true",
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+
+const frontendUrl =
+  process.env.FRONTEND_URL || "http://localhost:5173";
 
 // Register a new student
 router.post("/register", async (req, res) => {
@@ -122,5 +137,182 @@ router.post("/login", (req, res) => {
         }
     );
 });
+
+
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        message: "Email is required",
+      });
+    }
+
+    db.query(
+      "SELECT id, email FROM users WHERE email = ?",
+      [email],
+      async (err, results) => {
+        if (err) {
+          console.error("Forgot password database error:", err);
+          return res.status(500).json({
+            message: "Unable to process password reset",
+          });
+        }
+
+        // Use a generic response so account existence is not revealed.
+        const responseMessage =
+          "If an account exists for this email, a reset link will be sent.";
+
+        if (!results || results.length === 0) {
+          return res.status(200).json({
+            message: responseMessage,
+          });
+        }
+
+        try {
+          const user = results[0];
+          const rawToken = crypto.randomBytes(32).toString("hex");
+          const hashedToken = crypto
+            .createHash("sha256")
+            .update(rawToken)
+            .digest("hex");
+
+          const expiry = new Date(Date.now() + 15 * 60 * 1000);
+
+          db.query(
+            "UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE id = ?",
+            [hashedToken, expiry, user.id],
+            async (updateErr) => {
+              if (updateErr) {
+                console.error("Reset token database error:", updateErr);
+                return res.status(500).json({
+                  message: "Unable to process password reset",
+                });
+              }
+
+              try {
+                const resetLink =
+                  `${frontendUrl}/reset-password?token=${rawToken}`;
+
+                await transporter.sendMail({
+                  from:
+                    process.env.SMTP_FROM || process.env.SMTP_USER,
+                  to: user.email,
+                  subject: "Reset your Adaptive Minds password",
+                  text:
+                    `We received a request to reset your password.\n\n` +
+                    `Open this link within 15 minutes:\n${resetLink}\n\n` +
+                    `If you did not request this, ignore this email.`,
+                });
+
+                return res.status(200).json({
+                  message: responseMessage,
+                });
+              } catch (mailErr) {
+                console.error("Reset email error:", mailErr);
+                return res.status(500).json({
+                  message: "Unable to send reset email. Please try again later.",
+                });
+              }
+            }
+          );
+        } catch (tokenErr) {
+          console.error("Reset token error:", tokenErr);
+          return res.status(500).json({
+            message: "Unable to process password reset",
+          });
+        }
+      }
+    );
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+});
+
+
+
+router.post("/reset-password", async (req, res) => {
+  try {
+    const { token, password } = req.body;
+
+    if (!token || !password) {
+      return res.status(400).json({
+        message: "Token and new password are required",
+      });
+    }
+
+    if (typeof password !== "string" || password.length < 8) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters long",
+      });
+    }
+
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+
+    db.query(
+      `SELECT id FROM users
+       WHERE reset_token = ?
+       AND reset_token_expiry > NOW()`,
+      [hashedToken],
+      (err, results) => {
+        if (err) {
+          console.error("Reset password database error:", err);
+          return res.status(500).json({
+            message: "Unable to reset password",
+          });
+        }
+
+        if (!results || results.length === 0) {
+          return res.status(400).json({
+            message: "Reset link is invalid or expired. Please request a new one.",
+          });
+        }
+
+        const userId = results[0].id;
+
+        bcrypt.hash(password, 10, (hashErr, hashedPassword) => {
+          if (hashErr) {
+            console.error("Password hashing error:", hashErr);
+            return res.status(500).json({
+              message: "Unable to reset password",
+            });
+          }
+
+          db.query(
+            `UPDATE users
+             SET password = ?, reset_token = NULL, reset_token_expiry = NULL
+             WHERE id = ?`,
+            [hashedPassword, userId],
+            (updateErr) => {
+              if (updateErr) {
+                console.error("Password update error:", updateErr);
+                return res.status(500).json({
+                  message: "Unable to reset password",
+                });
+              }
+
+              return res.status(200).json({
+                message: "Password reset successful. You can now log in.",
+              });
+            }
+          );
+        });
+      }
+    );
+  } catch (err) {
+    console.error("Reset password error:", err);
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+});
+
 
 module.exports = router;

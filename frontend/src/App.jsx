@@ -12,6 +12,7 @@ import LearningPage from "./pages/LearningPage";
 import FinalTestPage from "./pages/FinalTestPage";
 import AITutor from "./pages/AITutor";
 import ProgressPage from "./pages/ProgressPage";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -41,6 +42,8 @@ function App() {
         <Route path="/ai-tutor" element={<AITutor />} />
 
         <Route path="/progress" element={<ProgressPage />} />
+
+        <Route path="/reset-password" element={<ResetPassword />} />
 
       </Routes>
     </BrowserRouter>

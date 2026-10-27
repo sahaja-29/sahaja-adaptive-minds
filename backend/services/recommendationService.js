@@ -85,91 +85,102 @@ function buildSearchQuery(subject, topic, difficulty) {
 // FILTER YOUTUBE RECOMMENDATIONS
 // ============================================================
 
+
+function normalizeText(value) {
+    return String(value || "")
+        .toLowerCase()
+        .replace(/&/g, " and ")
+        .replace(/[^a-z0-9\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function hasTopicMatch(video, topic) {
+    const title = normalizeText(video.title);
+    const description = normalizeText(video.description);
+    const requestedTopic = normalizeText(topic);
+
+    if (!title && !description) {
+        return false;
+    }
+
+    if (isTopicRelevant(video, topic)) {
+        return true;
+    }
+
+    const words = requestedTopic
+        .split(" ")
+        .filter((word) => word.length > 2);
+
+    if (words.length === 0) {
+        return false;
+    }
+
+    const searchableText = `${title} ${description}`;
+
+    const matchingWords = words.filter((word) =>
+        searchableText.includes(word)
+    );
+
+    const requiredMatches = Math.min(2, words.length);
+
+    return matchingWords.length >= requiredMatches;
+}
+
 function filterRecommendations(
     videos,
     subject,
     topic,
     difficulty
 ) {
-    const learningLevel =
-        getLearningLevel(difficulty);
+    const learningLevel = getLearningLevel(difficulty);
 
     if (!learningLevel) {
-        throw new Error(
-            "Invalid difficulty level"
-        );
+        throw new Error("Invalid difficulty level");
     }
 
-    const filteredVideos =
-        videos.filter((video) => {
+    return videos.filter((video) => {
+        const relevant = hasTopicMatch(video, topic);
+        const english = isEnglishVideo(video);
+        const isShort = isShortVideo(video);
 
-            if (
-                !isTopicRelevant(
-                    video,
-                    topic
-                )
-            ) {
-                return false;
-            }
-
-            if (
-                !isEnglishVideo(video)
-            ) {
-                return false;
-            }
-
-            if (
-                isShortVideo(video)
-            ) {
-                return false;
-            }
-
-            return true;
-        });
-
-    return filteredVideos;
+        return relevant && english && !isShort;
+    });
 }
-
-// ============================================================
-// EXPORT
-// ============================================================
 
 async function getRecommendations(
     subject,
     topic,
     difficulty
 ) {
-    const { searchYouTube } =
-        require("./youtubeService");
+    const { searchYouTube } = require("./youtubeService");
+    const { rankVideos } = require("./rankingService");
 
-    const { rankVideos } =
-        require("./rankingService");
+    const query = buildSearchQuery(
+        subject,
+        topic,
+        difficulty
+    );
 
-    const query =
-        buildSearchQuery(
-            subject,
-            topic,
-            difficulty
-        );
+    const videos = await searchYouTube(query);
 
-    const videos =
-        await searchYouTube(query);
+    console.log("YouTube videos found:", videos.length);
 
-    const filteredVideos =
-        filterRecommendations(
-            videos,
-            subject,
-            topic,
-            difficulty
-        );
+    const filteredVideos = filterRecommendations(
+        videos,
+        subject,
+        topic,
+        difficulty
+    );
 
-    const rankedVideos =
-        rankVideos(
-            filteredVideos,
-            subject,
-            topic,
-            difficulty
-        );
+    console.log("Videos after filtering:", filteredVideos.length);
+
+    const rankedVideos = rankVideos(
+        filteredVideos,
+        subject,
+        topic,
+        difficulty
+    );
 
     return {
         subject,
@@ -177,12 +188,10 @@ async function getRecommendations(
         difficulty,
         searchQuery: query,
         totalVideosFound: videos.length,
-        totalVideosAfterFiltering:
-            filteredVideos.length,
+        totalVideosAfterFiltering: filteredVideos.length,
         recommendations: rankedVideos
     };
 }
-
 module.exports = {
     getLearningLevel,
     buildSearchQuery,
