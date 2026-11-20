@@ -1037,7 +1037,7 @@ function Quiz({
               <div>
 
                 <h1>
-                  Data Structures & Algorithms
+                  {subjectName}
                 </h1>
 
                 <p>

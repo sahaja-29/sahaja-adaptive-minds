@@ -121,14 +121,13 @@ function Dashboard() {
               <span>Start New Learning</span>
             </button>
 
-
             <button
+              onClick={() => navigate("/coding-practice")}
               className="w-full text-left px-4 py-3.5 rounded-2xl text-[#64748B] hover:bg-[#F5F3FF] hover:text-[#5B4BDB] transition flex items-center gap-3"
             >
               <span>💻</span>
               <span>Coding Practice</span>
             </button>
-
 
             {/* AI TUTOR */}
 

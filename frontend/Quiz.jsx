@@ -557,17 +557,6 @@ function Quiz({ selectedSubject, selectedTopic, selectedDifficulty }) {
                             {video.classifiedDifficulty}
                           </span>
                         )}
-
-                        {video.url && (
-                          <a
-                            href={video.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="watch-video-btn"
-                          >
-                            ▶ Watch Video
-                          </a>
-                        )}
                       </div>
                     </div>
                   ))}
@@ -723,7 +712,7 @@ function Quiz({ selectedSubject, selectedTopic, selectedDifficulty }) {
             <div className="question-header-left">
               <div className="question-header-icon">{"</>"}</div>
               <div>
-                <h1>Data Structures &amp; Algorithms</h1>
+                <h1>{subjectName}</h1>
                 <p>
                   Topic:{" "}
                   <span>

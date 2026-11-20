@@ -335,7 +335,7 @@ router.get("/csvquestions", async (req, res) => {
                             ];
                         }
 
-                        return res.json(matchingQuestions.slice(0, 5));
+                        return res.json(matchingQuestions.slice(0, 10));
                     } catch (error) {
                         console.error("CSV loading error:", error);
 
