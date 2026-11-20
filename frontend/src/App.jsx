@@ -1,4 +1,4 @@
-import AITutor from "./pages/AITutor";
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
@@ -8,55 +8,37 @@ import Dashboard from "./pages/Dashboard";
 import SubjectPage from "./pages/SubjectPage";
 import NotesPage from "./pages/NotesPage";
 import QuizPage from "./pages/QuizPage";
+import LearningSelection from "./pages/LearningSelection";
+import LearningPage from "./pages/LearningPage";
+import FinalTestPage from "./pages/FinalTestPage";
+import AITutor from "./pages/AITutor";
+import ProgressPage from "./pages/ProgressPage";
+import ResetPassword from "./pages/ResetPassword";
+import CodingPractice from "./pages/CodingPractice";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-
-        <Route
-  path="/ai-tutor"
-  element={<AITutor />}
-/>
-
-
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/semester" element={<SemesterSelection />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/learning" element={<LearningSelection />} />
+        <Route path="/subject/:subjectName" element={<SubjectPage />} />
+        <Route path="/notes/:subjectName" element={<NotesPage />} />
+        <Route path="/quiz/:subjectName" element={<QuizPage />} />
+        <Route path="/learning-page" element={<LearningPage />} />
+        <Route path="/final-test" element={<FinalTestPage />} />
         <Route path="/ai-tutor" element={<AITutor />} />
-        <Route
-          path="/"
-          element={<Login />}
-        />
+        <Route path="/progress" element={<ProgressPage />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
+        {/* Coding Practice */}
         <Route
-          path="/register"
-          element={<Register />}
+          path="/coding-practice"
+          element={<CodingPractice />}
         />
-
-        <Route
-          path="/semester"
-          element={<SemesterSelection />}
-        />
-
-        <Route
-          path="/dashboard"
-          element={<Dashboard />}
-        />
-
-        <Route
-          path="/subject/:subjectName"
-          element={<SubjectPage />}
-        />
-
-        <Route
-          path="/notes/:subjectName"
-          element={<NotesPage />}
-        />
-
-        {/* Quiz Integration */}
-        <Route
-          path="/quiz/:subjectName"
-          element={<QuizPage />}
-        />
-
       </Routes>
     </BrowserRouter>
   );

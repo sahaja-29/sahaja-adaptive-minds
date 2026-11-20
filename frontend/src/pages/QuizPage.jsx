@@ -1,14 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import Quiz from "../components/Quiz";
 import "../components/Quiz.css";
 
 function QuizPage() {
-  const { subjectName } = useParams();
-
-  const [subjects, setSubjects] = useState([]);
-  const [topics, setTopics] = useState([]);
-
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedTopic, setSelectedTopic] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
@@ -17,87 +11,59 @@ function QuizPage() {
   const [error, setError] = useState("");
 
   // =========================================
-  // GET SUBJECTS
+  // LOAD SAVED LEARNING SELECTION
   // =========================================
 
   useEffect(() => {
-    fetch("http://localhost:5000/subjects")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to load subjects");
-        }
+    const subjectId = localStorage.getItem("currentSubjectId");
+    const topicId = localStorage.getItem("currentTopicId");
+    const difficulty = localStorage.getItem("currentDifficulty");
 
-        return response.json();
-      })
-      .then((data) => {
-        setSubjects(data);
+    const subjectName = localStorage.getItem("currentSubject");
+    const topicName = localStorage.getItem("currentTopic");
 
-        // Match subject from URL
-        const matchedSubject = data.find(
-          (subject) =>
-            subject.name?.trim().toLowerCase() ===
-            subjectName?.trim().toLowerCase()
-        );
+    console.log("Saved Learning Selection:");
+    console.log("Subject:", subjectName);
+    console.log("Subject ID:", subjectId);
+    console.log("Topic:", topicName);
+    console.log("Topic ID:", topicId);
+    console.log("Difficulty:", difficulty);
 
-        // DBMS / Database Systems special case
-        const databaseSubject = data.find(
-          (subject) =>
-            subjectName?.trim().toLowerCase() === "dbms" &&
-            subject.name?.trim().toLowerCase() === "database systems"
-        );
+    // =========================================
+    // VALIDATE SAVED DATA
+    // =========================================
 
-        const subject = matchedSubject || databaseSubject;
+    if (!subjectId || !topicId || !difficulty) {
+      setError(
+        "Learning selection is incomplete. Please return to Start New Learning and select a subject, topic and difficulty."
+      );
 
-        if (!subject) {
-          setError(`Subject "${subjectName}" was not found.`);
-          setLoading(false);
-          return;
-        }
-
-        setSelectedSubject(String(subject.id));
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Unable to connect to the backend.");
-        setLoading(false);
-      });
-  }, [subjectName]);
-
-  // =========================================
-  // GET TOPICS
-  // =========================================
-
-  useEffect(() => {
-    if (!selectedSubject) {
+      setLoading(false);
       return;
     }
 
-    fetch(
-      `http://localhost:5000/topics?subjectId=${selectedSubject}`
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to load topics");
-        }
+    // =========================================
+    // SET QUIZ DATA
+    // =========================================
 
-        return response.json();
-      })
-      .then((data) => {
-        setTopics(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Unable to load topics.");
-        setLoading(false);
-      });
-  }, [selectedSubject]);
+    setSelectedSubject(subjectId);
+    setSelectedTopic(topicId);
+    setSelectedDifficulty(difficulty);
+
+    setLoading(false);
+  }, []);
 
   // =========================================
   // START QUIZ
   // =========================================
 
-  if (selectedTopic && selectedDifficulty) {
+  if (
+    !loading &&
+    !error &&
+    selectedSubject &&
+    selectedTopic &&
+    selectedDifficulty
+  ) {
     return (
       <Quiz
         selectedSubject={selectedSubject}
@@ -114,21 +80,21 @@ function QuizPage() {
   if (loading) {
     return (
       <div className="quiz-page">
-
         <div className="quiz-loading">
 
           <div className="quiz-loading-icon">
             🧠
           </div>
 
-          <h2>Loading Quiz Setup...</h2>
+          <h2>
+            Preparing Your Assessment...
+          </h2>
 
           <p>
-            Preparing your personalized assessment.
+            Loading your selected topic and difficulty.
           </p>
 
         </div>
-
       </div>
     );
   }
@@ -140,229 +106,26 @@ function QuizPage() {
   if (error) {
     return (
       <div className="quiz-page">
-
         <div className="quiz-error">
 
           <div className="quiz-error-icon">
             ⚠️
           </div>
 
-          <h2>Unable to Start Quiz</h2>
+          <h2>
+            Unable to Start Assessment
+          </h2>
 
-          <p>{error}</p>
+          <p>
+            {error}
+          </p>
 
         </div>
-
       </div>
     );
   }
 
-  // =========================================
-  // QUIZ SETUP
-  // =========================================
-
-  return (
-    <div className="quiz-page">
-
-      <div className="quiz-setup-card">
-
-        {/* =================================
-            HEADER
-        ================================= */}
-
-        <div className="quiz-header">
-
-          <div className="quiz-icon">
-            🧠
-          </div>
-
-          <div className="quiz-header-content">
-
-            <h1>
-              Adaptive Minds Quiz
-            </h1>
-
-            <p>
-              {subjectName}
-            </p>
-
-          </div>
-
-        </div>
-
-
-        {/* =================================
-            INTRO
-        ================================= */}
-
-        <div className="quiz-intro">
-
-          <h2>
-            Customize Your Quiz
-          </h2>
-
-          <p>
-            Choose a topic and difficulty level to
-            begin your personalized assessment.
-          </p>
-
-        </div>
-
-
-        {/* =================================
-            TOPIC
-        ================================= */}
-
-        <div className="quiz-field">
-
-          <label htmlFor="topic">
-            Select Topic
-          </label>
-
-          <select
-            id="topic"
-            value={selectedTopic}
-            onChange={(e) =>
-              setSelectedTopic(e.target.value)
-            }
-          >
-
-            <option value="">
-              Choose a topic
-            </option>
-
-            {topics.map((topic) => (
-              <option
-                key={topic.id}
-                value={topic.id}
-              >
-                {topic.topic_name}
-              </option>
-            ))}
-
-          </select>
-
-        </div>
-
-
-        {/* =================================
-            DIFFICULTY
-        ================================= */}
-
-        <div className="quiz-field">
-
-          <label htmlFor="difficulty">
-            Select Difficulty
-          </label>
-
-          <select
-            id="difficulty"
-            value={selectedDifficulty}
-            onChange={(e) =>
-              setSelectedDifficulty(e.target.value)
-            }
-          >
-
-            <option value="">
-              Choose difficulty
-            </option>
-
-            <option value="Easy">
-              Easy
-            </option>
-
-            <option value="Medium">
-              Medium
-            </option>
-
-            <option value="Hard">
-              Hard
-            </option>
-
-          </select>
-
-        </div>
-
-
-        {/* =================================
-            DIFFICULTY CARDS
-        ================================= */}
-
-        <div className="difficulty-info">
-
-          <div className="difficulty-item">
-
-            <span className="difficulty-dot easy"></span>
-
-            <div>
-              <strong>
-                Easy
-              </strong>
-
-              <small>
-                Build your fundamentals
-              </small>
-            </div>
-
-          </div>
-
-
-          <div className="difficulty-item">
-
-            <span className="difficulty-dot medium"></span>
-
-            <div>
-              <strong>
-                Medium
-              </strong>
-
-              <small>
-                Test your understanding
-              </small>
-            </div>
-
-          </div>
-
-
-          <div className="difficulty-item">
-
-            <span className="difficulty-dot hard"></span>
-
-            <div>
-              <strong>
-                Hard
-              </strong>
-
-              <small>
-                Challenge your skills
-              </small>
-            </div>
-
-          </div>
-
-        </div>
-
-
-        {/* =================================
-            STARTING MESSAGE
-        ================================= */}
-
-        {selectedTopic && selectedDifficulty && (
-          <div className="quiz-starting">
-
-            <span>
-              🚀
-            </span>
-
-            Preparing your personalized quiz...
-
-          </div>
-        )}
-
-      </div>
-
-    </div>
-  );
+  return null;
 }
 
 export default QuizPage;

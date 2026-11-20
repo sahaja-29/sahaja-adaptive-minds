@@ -1,0 +1,91 @@
+﻿Subject,Topic,Difficulty,Question,Option1,Option2,Option3,Option4,CorrectAnswer,Explanation
+DDCO,Boolean Algebra and Logic Gates,Easy,What is the output of an AND gate when A=1 and B=1?,0,1,A,B,1,AND outputs 1 only when both inputs are 1.
+DDCO,Boolean Algebra and Logic Gates,Easy,What is the output of an OR gate when A=0 and B=0?,0,1,A,Undefined,0,OR outputs 1 if at least one input is 1.
+DDCO,Boolean Algebra and Logic Gates,Easy,Which gate produces the complement of its input?,AND,OR,NOT,XOR,NOT,A NOT gate inverts its single input.
+DDCO,Boolean Algebra and Logic Gates,Easy,What is the output of a NOT gate for input 1?,0,1,Both 0 and 1,Undefined,0,NOT 1 equals 0.
+DDCO,Boolean Algebra and Logic Gates,Easy,Which gate outputs 1 only when its two inputs differ?,AND,OR,XOR,XNOR,XOR,XOR is 1 when its inputs are unequal.
+DDCO,Boolean Algebra and Logic Gates,Easy,Which gate is the complement of AND?,NOR,NAND,XNOR,OR,NAND,NAND output is the inverse of AND.
+DDCO,Boolean Algebra and Logic Gates,Easy,Which gate is the complement of OR?,NAND,XOR,NOR,XNOR,NOR,NOR output is the inverse of OR.
+DDCO,Boolean Algebra and Logic Gates,Easy,What is the output of an XOR gate when A=1 and B=1?,0,1,A,Undefined,0,XOR outputs 0 for equal inputs.
+DDCO,Boolean Algebra and Logic Gates,Easy,What is the output of an XNOR gate when A=0 and B=0?,0,1,A,Undefined,1,XNOR outputs 1 when its inputs are equal.
+DDCO,Boolean Algebra and Logic Gates,Easy,Simplify A + 0 using Boolean algebra.,0,1,A,A′,A,OR with 0 leaves A unchanged.
+DDCO,Boolean Algebra and Logic Gates,Easy,Simplify A · 1.,0,1,A,A′,A,AND with 1 leaves A unchanged.
+DDCO,Boolean Algebra and Logic Gates,Easy,Simplify A + 1.,0,1,A,A′,1,OR with 1 is always 1.
+DDCO,Boolean Algebra and Logic Gates,Easy,Simplify A · 0.,0,1,A,A′,0,AND with 0 is always 0.
+DDCO,Boolean Algebra and Logic Gates,Easy,What is the complement of A′?,0,1,A,A′,A,Double complementation gives A.
+DDCO,Boolean Algebra and Logic Gates,Easy,Which law states A + A = A?,Idempotent law,Identity law,Complement law,Absorption law,Idempotent law,The idempotent law states A + A = A and A·A = A.
+DDCO,Boolean Algebra and Logic Gates,Easy,Which law states A + A′ = 1?,Associative law,Complement law,Distributive law,De Morgan's law,Complement law,A variable ORed with its complement is 1.
+DDCO,Boolean Algebra and Logic Gates,Easy,Simplify A · A.,0,1,A,A′,A,The idempotent law gives A·A = A.
+DDCO,Boolean Algebra and Logic Gates,Easy,Which Boolean operator is represented by the plus sign (+)?,AND,OR,NOT,XNOR,OR,"In Boolean algebra, plus denotes logical OR."
+DDCO,Boolean Algebra and Logic Gates,Easy,Which Boolean operator is represented by the dot (·)?,AND,OR,NOT,XOR,AND,The dot denotes logical AND.
+DDCO,Boolean Algebra and Logic Gates,Easy,"For A=0, what is A′?",0,1,A,Undefined,1,The complement of 0 is 1.
+DDCO,Boolean Algebra and Logic Gates,Easy,How many rows are in the truth table for three Boolean inputs?,3,6,8,9,8,Three inputs have 2³ = 8 combinations.
+DDCO,Boolean Algebra and Logic Gates,Easy,"What is the output of NAND for A=1, B=0?",0,1,A′,B′,1,"AND is 0 for inputs 1 and 0, so NAND is 1."
+DDCO,Boolean Algebra and Logic Gates,Easy,"What is the output of NOR for A=0, B=1?",0,1,A′,B′,0,"OR is 1, so NOR is 0."
+DDCO,Boolean Algebra and Logic Gates,Easy,Which gate is called a universal gate?,AND only,OR only,NAND,XOR only,NAND,NAND alone can implement any Boolean function.
+DDCO,Boolean Algebra and Logic Gates,Easy,Which other gate is universal?,NOR,XOR,XNOR,NOT only,NOR,NOR alone can implement any Boolean function.
+DDCO,Boolean Algebra and Logic Gates,Easy,What is the complement of 0?,0,1,A,Undefined,1,Boolean complement swaps 0 and 1.
+DDCO,Boolean Algebra and Logic Gates,Easy,Simplify A + A·B.,A,B,A·B,A+B,A,Absorption law: A + A·B = A.
+DDCO,Boolean Algebra and Logic Gates,Easy,Simplify A·(A+B).,A,B,A+B,A·B,A,Absorption law: A(A+B) = A.
+DDCO,Boolean Algebra and Logic Gates,Easy,"What is the output of an OR gate for A=1, B=0?",0,1,A′,B′,1,"At least one input is 1, so OR outputs 1."
+DDCO,Boolean Algebra and Logic Gates,Easy,How many inputs does a standard NOT gate have?,One,Two,Three,Four,One,NOT is a single-input logic gate.
+DDCO,Boolean Algebra and Logic Gates,Medium,Simplify (A + B)(A + B′).,A,B,A+B,A·B,A,Using (X+Y)(X+Z)=X+YZ gives A + BB′ = A.
+DDCO,Boolean Algebra and Logic Gates,Medium,Simplify A·B + A·B′.,A,B,A+B,A·B,A,Factor A: A(B+B′)=A.
+DDCO,Boolean Algebra and Logic Gates,Medium,Simplify (A+B)(A′+B).,A,B,A·B,A+B,B,Use (X+Y)(X′+Y)=Y.
+DDCO,Boolean Algebra and Logic Gates,Medium,Apply De Morgan's law to (A·B)′.,A′·B′,A′+B′,A+B,A·B,A′+B′,The complement of a product is the sum of the complements.
+DDCO,Boolean Algebra and Logic Gates,Medium,Apply De Morgan's law to (A+B)′.,A′+B′,A′·B′,A·B,A+B′,A′·B′,The complement of a sum is the product of the complements.
+DDCO,Boolean Algebra and Logic Gates,Medium,Simplify A + A′B.,A+B,A′+B,A·B,A′B,A+B,Using X + X′Y = X + Y.
+DDCO,Boolean Algebra and Logic Gates,Medium,Simplify A(A′+B).,A·B,A+B,A′B,0,A·B,Distribute: AA′ + AB = 0 + AB = AB.
+DDCO,Boolean Algebra and Logic Gates,Medium,"What is the output of XOR for A=0, B=1?",0,1,A′,B′,1,XOR is 1 when inputs differ.
+DDCO,Boolean Algebra and Logic Gates,Medium,"What is the output of XNOR for A=1, B=0?",0,1,A,B,0,XNOR is 1 only for equal inputs.
+DDCO,Boolean Algebra and Logic Gates,Medium,Which expression represents a 2-input NAND gate?,AB,(AB)′,A+B,(A+B)′,(AB)′,NAND complements the AND result.
+DDCO,Boolean Algebra and Logic Gates,Medium,Which expression represents a 2-input NOR gate?,AB,(AB)′,A+B,(A+B)′,(A+B)′,NOR complements the OR result.
+DDCO,Boolean Algebra and Logic Gates,Medium,Simplify A′B + AB.,A,B,A+B,A′+B,B,Factor B: B(A′+A)=B.
+DDCO,Boolean Algebra and Logic Gates,Medium,Simplify (A+B)(A′+B′).,A′B + AB′,AB + A′B′,A+B,A·B,A′B + AB′,"Expanding and removing BB′ gives A′B + AB′, the XOR expression."
+DDCO,Boolean Algebra and Logic Gates,Medium,Which expression is the complement of A XOR B?,A′B+AB′,AB + A′B′,A+B,A·B,AB + A′B′,"XNOR is 1 for equal inputs, giving AB + A′B′."
+DDCO,Boolean Algebra and Logic Gates,Medium,"For A=1, B=0, C=1, evaluate AB + C.",0,1,A,B,1,"AB=0, and 0 OR C=1."
+DDCO,Boolean Algebra and Logic Gates,Medium,"For A=1, B=1, C=0, evaluate (A+B)C.",0,1,A,C,0,"A+B=1, then 1·0=0."
+DDCO,Boolean Algebra and Logic Gates,Medium,How many minterms exist for a Boolean function of four variables?,4,8,16,32,16,There is one minterm for each of 2⁴ input combinations.
+DDCO,Boolean Algebra and Logic Gates,Medium,Which canonical form is a sum of minterms?,POS,SOP,XOR form,Gray form,SOP,Canonical sum-of-products ORs together minterms.
+DDCO,Boolean Algebra and Logic Gates,Medium,Which canonical form is a product of maxterms?,SOP,POS,BCD,Gray code,POS,Canonical product-of-sums ANDs together maxterms.
+DDCO,Boolean Algebra and Logic Gates,Medium,"In a truth table, a minterm evaluates to 1 for how many input combinations?",None,Exactly one,Exactly two,All combinations,Exactly one,A minterm contains every variable once and identifies one input row.
+DDCO,Boolean Algebra and Logic Gates,Medium,Simplify A + A′.,0,1,A,A′,1,A and its complement cover both possible values.
+DDCO,Boolean Algebra and Logic Gates,Medium,Simplify A·A′.,0,1,A,A′,0,A and A′ cannot both be 1.
+DDCO,Boolean Algebra and Logic Gates,Medium,Which gate output is 1 for exactly the two input combinations where inputs differ?,AND,XOR,XNOR,NOR,XOR,"For two inputs, XOR is 1 on 01 and 10."
+DDCO,Boolean Algebra and Logic Gates,Medium,"If a 2-input logic gate has output 0 only for input 11, which gate is it?",OR,NAND,AND,NOR,NAND,NAND is 0 only when both inputs are 1.
+DDCO,Boolean Algebra and Logic Gates,Medium,"If a 2-input logic gate has output 1 only for input 00, which gate is it?",NOR,NAND,OR,XOR,NOR,NOR is 1 only when both inputs are 0.
+DDCO,Boolean Algebra and Logic Gates,Medium,Simplify AB + A′B + AB′.,A+B,AB,A′+B′,A⊕B,A+B,AB + A′B = B; then B + AB′ = A+B.
+DDCO,Boolean Algebra and Logic Gates,Medium,Simplify (A+B+C)′.,A′+B′+C′,A′B′C′,ABC,A+B+C,A′B′C′,De Morgan's law turns the complemented sum into a product of complements.
+DDCO,Boolean Algebra and Logic Gates,Medium,Which identity is the distributive law in Boolean algebra?,A+0=A,A(A+B)=A,A(B+C)=AB+AC,A+A′=1,A(B+C)=AB+AC,AND distributes over OR in Boolean algebra.
+DDCO,Boolean Algebra and Logic Gates,Medium,How many distinct Boolean functions of two variables are possible?,4,8,16,32,16,There are 2⁴ possible truth tables for two variables.
+DDCO,Boolean Algebra and Logic Gates,Medium,"What is A XOR B XOR C for A=1, B=1, C=1?",0,1,A,C,1,XOR of three ones is 1 because the number of ones is odd.
+DDCO,Boolean Algebra and Logic Gates,Hard,Simplify F = A′B + AB + AB′.,A+B,A,B,A′+B,A+B,A′B+AB=B; then B+AB′=A+B.
+DDCO,Boolean Algebra and Logic Gates,Hard,Simplify F = (A+B′)(A′+B′).,B′,A,A′,A+B′,B′,Use (X+Y)(X′+Y)=Y with Y=B′.
+DDCO,Boolean Algebra and Logic Gates,Hard,Simplify F = AB + A′C + BC using the consensus theorem.,AB + A′C,AB + BC,A′C + BC,AB + A′C + BC,AB + A′C,BC is the consensus term and is redundant.
+DDCO,Boolean Algebra and Logic Gates,Hard,Which expression is equivalent to (A+B)(A′+C)?,AB + A′C,AC + A′B,A′B + AC + BC,A′B + BC,A′B + AC + BC,"Expansion gives AA′+AC+A′B+BC; AA′=0, and BC is the consensus term."
+DDCO,Boolean Algebra and Logic Gates,Hard,Simplify F = A′B′ + A′B + AB.,A′+B,A+B,A′+B′,AB,A′+B,"Combine A′B′ + A′B = A′, then A′ + AB = A′ + B."
+DDCO,Boolean Algebra and Logic Gates,Hard,Simplify F = (A+B)(A+B′)(A′+C).,AC,A+C,A′+B,AB+C,AC,First two factors reduce to A; then A(A′+C)=AC.
+DDCO,Boolean Algebra and Logic Gates,Hard,Find the complement of F = AB + C′D.,(A′+B′)(C+D′),A′B′ + C + D′,(A+B)(C′+D),A′B′CD′,(A′+B′)(C+D′),(AB+C′D)′=(AB)′(C′D)′=(A′+B′)(C+D′).
+DDCO,Boolean Algebra and Logic Gates,Hard,Which is the correct De Morgan expansion of (A+B+C)′?,A′+B′+C′,A′B′C′,ABC,A+B+C,A′B′C′,Complementing an OR expression produces the AND of each complemented input.
+DDCO,Boolean Algebra and Logic Gates,Hard,"For F = A′B + AB′, what is F when A=B=1?",0,1,A,B,0,The expression is XOR; equal inputs produce 0.
+DDCO,Boolean Algebra and Logic Gates,Hard,"A function is 1 for inputs 001, 011, 101, 111 in the order ABC. What is its simplified form?",C,A,B,A+B,C,"All listed minterms have C=1, regardless of A and B."
+DDCO,Boolean Algebra and Logic Gates,Hard,"A function is 1 for minterms m(1,3,5,7) of variables A,B,C. What is F?",C,A,B,A′,C,"Minterms 1, 3, 5, and 7 are exactly the rows where C=1."
+DDCO,Boolean Algebra and Logic Gates,Hard,"For variables A,B,C, which minterm corresponds to input 101?",A′BC,AB′C,ABC′,A′B′C,AB′C,"Input 101 means A=1, B=0, C=1, giving AB′C."
+DDCO,Boolean Algebra and Logic Gates,Hard,"For variables A,B,C, which maxterm is 0 at input 010?",A+B′+C,A′+B+C′,A+B+C,A′+B′+C′,A′+B+C′,A maxterm is 0 when each literal is 0; for 010 this is A′+B+C′.
+DDCO,Boolean Algebra and Logic Gates,Hard,How many 2-input NAND gates are needed to implement NOT A if no other gates are available?,1,2,3,4,1,Tie both NAND inputs to A: (A·A)′ = A′.
+DDCO,Boolean Algebra and Logic Gates,Hard,"Using a 2-input NAND gate with both inputs tied to A, what is its output?",A,A′,0,1,A′,"NAND(A,A) = (A·A)′ = A′."
+DDCO,Boolean Algebra and Logic Gates,Hard,"Using only NOR gates, how can OR(A,B) be constructed?","NOR(A,B)","NOR(NOR(A,A),NOR(B,B))","NOR(NOR(A,B),NOR(A,B))","NOR(A,A)","NOR(NOR(A,B),NOR(A,B))","NOR the NOR output with itself to invert it, producing A+B."
+DDCO,Boolean Algebra and Logic Gates,Hard,Which expression is equivalent to A XNOR B?,A′B + AB′,AB + A′B′,A+B,A′+B′,AB + A′B′,XNOR is true when both inputs are equal.
+DDCO,Boolean Algebra and Logic Gates,Hard,"For F = (A⊕B)′, which gate directly implements F?",XOR,XNOR,NAND,NOR,XNOR,XNOR is the complement of XOR.
+DDCO,Boolean Algebra and Logic Gates,Hard,Simplify F = A′B′C + A′BC + AB′C + ABC.,C,A,B,A+B,C,"All four combinations of A and B occur with C=1, so F=C."
+DDCO,Boolean Algebra and Logic Gates,Hard,Simplify F = AB + A′B + A′B′.,A′+B,A+B′,A′+B′,AB,A′+B,AB + A′B = B; B + A′B′ = A′ + B.
+DDCO,Boolean Algebra and Logic Gates,Hard,"For F = (A+B′)(A′+B), identify the equivalent function.",A XNOR B,A XOR B,A AND B,A OR B,A XNOR B,"Expansion gives AB + A′B′, which is XNOR."
+DDCO,Boolean Algebra and Logic Gates,Hard,When does A⊕B⊕C equal 1?,An even number of inputs are 1,An odd number of inputs are 1,All inputs are 0 only,Exactly two inputs are 1,An odd number of inputs are 1,A multi-input XOR is 1 when the number of 1 inputs is odd.
+DDCO,Boolean Algebra and Logic Gates,Hard,A 4-variable K-map group contains eight adjacent 1-cells. How many variables remain in the product term?,1,2,3,4,1,"A group of 2³ cells eliminates three variables, leaving one."
+DDCO,Boolean Algebra and Logic Gates,Hard,A 4-variable K-map group contains four adjacent 1-cells. How many variables remain in the implicant?,1,2,3,4,2,A group of four eliminates two of the four variables.
+DDCO,Boolean Algebra and Logic Gates,Hard,Which identity justifies A + A′B = A + B?,Absorption variant,Associative law,Commutative law,Involution law,Absorption variant,The identity X + X′Y = X + Y follows from distributive and complement laws.
+DDCO,Boolean Algebra and Logic Gates,Hard,Simplify F = (A+B+C)(A+B+C′).,A+B,A+C,B+C,ABC,A+B,Use (X+C)(X+C′)=X with X=A+B.
+DDCO,Boolean Algebra and Logic Gates,Hard,"For a NAND gate, A=0 and B=1. What is the output?",0,1,A·B,A+B,1,"AND is 0, so NAND is 1."
+DDCO,Boolean Algebra and Logic Gates,Hard,"A 3-input NOR gate receives 0,0,0. What is its output?",0,1,Undefined,Depends on order,1,"OR of all zeros is 0, and its complement is 1."
+DDCO,Boolean Algebra and Logic Gates,Hard,Simplify F = (AB)′ + AB.,0,1,AB,A+B,1,Let X=AB; X′+X=1.
+DDCO,Boolean Algebra and Logic Gates,Hard,How many rows are required in a truth table for five independent Boolean variables?,10,16,25,32,32,Five variables have 2⁵ = 32 input combinations.

@@ -1,7 +1,7 @@
 const express = require("express");
-const router = express.Router();
-
 const { askAI } = require("../controllers/aiController");
+
+const router = express.Router();
 
 router.post("/ask", askAI);
 
